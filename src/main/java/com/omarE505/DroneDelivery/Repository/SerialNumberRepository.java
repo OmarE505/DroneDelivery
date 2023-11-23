@@ -1,4 +1,4 @@
-package com.omarE505.DroneDelivery.Repository;
+package com.omarE505.DroneDelivery.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

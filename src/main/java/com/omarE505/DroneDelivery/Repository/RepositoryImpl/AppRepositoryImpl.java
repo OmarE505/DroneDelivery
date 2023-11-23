@@ -1,9 +1,9 @@
-package com.omarE505.DroneDelivery.Repository.RepositoryImpl;
+package com.omarE505.DroneDelivery.repository.RepositoryImpl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.omarE505.DroneDelivery.Repository.AppRepository;
+import com.omarE505.DroneDelivery.repository.AppRepository;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.jpa.impl.JPAQuery;
 

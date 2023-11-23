@@ -1,11 +1,11 @@
-package com.omarE505.DroneDelivery.Schedule;
+package com.omarE505.DroneDelivery.schedule;
 
 import java.util.List;
 
-import com.omarE505.DroneDelivery.Repository.AuditDroneRepository;
-import com.omarE505.DroneDelivery.Repository.DroneRepository;
 import com.omarE505.DroneDelivery.entity.AuditDrone;
 import com.omarE505.DroneDelivery.entity.Drone;
+import com.omarE505.DroneDelivery.repository.AuditDroneRepository;
+import com.omarE505.DroneDelivery.repository.DroneRepository;
 import com.omarE505.DroneDelivery.utils.State;
 
 import org.springframework.beans.factory.annotation.Autowired;
