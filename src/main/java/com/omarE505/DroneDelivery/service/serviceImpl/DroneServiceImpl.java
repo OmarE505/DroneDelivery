@@ -120,8 +120,7 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public Drone update(DroneDto drone) throws ResourceNotFoundException, IllegalArgumentException {
-        Optional<Long> id = Optional.ofNullable(drone.getId());
+    public Drone update(Optional<Long> id, DroneDto drone) throws ResourceNotFoundException, IllegalArgumentException {
         Drone existingDrone = this.droneRepository
                 .findById(id.orElseThrow(() -> new ResourceNotFoundException("Drone not found. id is null")))
                 .orElseThrow(() -> new ResourceNotFoundException("Drone not found"));

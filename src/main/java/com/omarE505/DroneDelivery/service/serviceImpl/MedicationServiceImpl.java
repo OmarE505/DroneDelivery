@@ -68,8 +68,7 @@ public class MedicationServiceImpl implements MedicationService {
     }
 
     @Override
-    public Medication update(MedicationDto dto) throws ResourceNotFoundException, IllegalArgumentException {
-        Optional<Long> id = Optional.ofNullable(dto.getId());
+    public Medication update(Optional<Long> id, MedicationDto dto) throws ResourceNotFoundException, IllegalArgumentException {
         Medication medication = this.medicationRepository
                 .findById(id.orElseThrow(() -> new ResourceNotFoundException("Medication not found. id is null")))
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found"));

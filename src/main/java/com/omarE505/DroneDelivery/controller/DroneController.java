@@ -38,27 +38,32 @@ public class DroneController {
     @Autowired
     private MedicationService medicationService;
 
+    public DroneController(DroneService droneService, MedicationService medicationService) {
+        this.droneService = droneService;
+        this.medicationService = medicationService;
+    }
+
     @GetMapping
     public ResponseEntity<List<Drone>> getAllDrones() {
-        return ResponseEntity.ok(this.droneService.findAll());
+        return ResponseEntity.ok(droneService.findAll());
     }
 
     @PostMapping
     public ResponseEntity<Drone> register(@NotNull @Valid @RequestBody DroneDto dto)
             throws IllegalArgumentException, RequirementNotMetException {
-        return ResponseEntity.ok(this.droneService.register(dto));
+        return ResponseEntity.ok(droneService.register(dto));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Drone> findById(@PathVariable Long id)
             throws ResourceNotFoundException {
-        return ResponseEntity.ok(this.droneService.findById(id));
+        return ResponseEntity.ok(droneService.findById(id));
     }
 
-    @PutMapping
-    public ResponseEntity<Drone> update(@NotNull @Valid @RequestBody DroneDto dto)
+    @PutMapping("/{id}")
+    public ResponseEntity<Drone> update(@PathVariable Optional<Long> id, @NotNull @Valid @RequestBody DroneDto dto)
             throws ResourceNotFoundException, IllegalArgumentException {
-        return ResponseEntity.ok(this.droneService.update(dto));
+        return ResponseEntity.ok(droneService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
@@ -74,33 +79,33 @@ public class DroneController {
         List<Medication> meds = new ArrayList<Medication>();
         Iterator<Long> itr = medicationIds.iterator();
         while (itr.hasNext()) {
-            Medication med = this.medicationService.findById(itr.next());
+            Medication med = medicationService.findById(itr.next());
             meds.add(med);
         }
-        return ResponseEntity.ok(this.droneService.load(meds, droneId));
+        return ResponseEntity.ok(droneService.load(meds, droneId));
     }
 
     @GetMapping("/fromLoadedMedications/{droneId}")
     public ResponseEntity<Drone> checkLoadedMedications(@PathVariable Long droneId)
             throws ResourceNotFoundException {
-        return ResponseEntity.ok(this.medicationService.checkLoadedMedications(droneId));
+        return ResponseEntity.ok(medicationService.checkLoadedMedications(droneId));
     }
 
     @GetMapping("/medications/{droneId}")
     public ResponseEntity<List<Medication>> getMedications(@PathVariable Long droneId)
             throws ResourceNotFoundException {
-        return ResponseEntity.ok(this.droneService.getMedications(droneId));
+        return ResponseEntity.ok(droneService.getMedications(droneId));
     }
 
     @GetMapping("/available/{totalMedicationWeight}")
     public ResponseEntity<List<Drone>> findAvailable(@PathVariable("totalMedicationWeight") int totalWeight) {
-        return ResponseEntity.ok(this.droneService.findAvailable(totalWeight));
+        return ResponseEntity.ok(droneService.findAvailable(totalWeight));
     }
 
     @GetMapping("/batteryLevel/{droneId}")
     public ResponseEntity<Integer> checkBatteryLevel(@PathVariable Long droneId)
             throws ResourceNotFoundException {
-        Optional<Drone> oDrone = Optional.of(this.droneService.findById(droneId));
+        Optional<Drone> oDrone = Optional.of(droneService.findById(droneId));
         return ResponseEntity.ok(oDrone.orElseThrow(() -> new ResourceNotFoundException("Drone could not be found"))
                 .getBatteryCapacity());
     }
