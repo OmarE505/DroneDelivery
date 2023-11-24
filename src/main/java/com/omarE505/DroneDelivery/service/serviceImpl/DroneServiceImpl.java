@@ -153,7 +153,6 @@ public class DroneServiceImpl implements DroneService {
     }
 
     private String generateSerialNumber() {
-        // TODO: use UUId to generate serial number
         return new SerialNumberGenerator(30).split(6, '-').generate();
     }
 }
