@@ -15,8 +15,6 @@ public interface DroneService {
 
     public Drone register(DroneDto drone) throws IllegalArgumentException, RequirementNotMetException;
 
-    public List<Drone> findAvailable(int totalWeight);
-
     public Drone load(List<Medication> medications, Long droneId)
             throws ResourceNotFoundException, IllegalArgumentException, RequirementNotMetException;
 

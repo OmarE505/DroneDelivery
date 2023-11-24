@@ -3,10 +3,10 @@ INSERT INTO weight_model (id, name, weight_value) VALUES (2, 'MIDDLE_WEIGHT', 20
 INSERT INTO weight_model (id, name, weight_value) VALUES (3, 'CRUISER_WEIGHT', 300);
 INSERT INTO weight_model (id, name, weight_value) VALUES (4, 'HEAVY_WEIGHT', 500);
 
-INSERT INTO drone VALUES (1, 100, 'IDLE', 1);
-INSERT INTO drone VALUES (2, 100, 'IDLE', 2);
-INSERT INTO drone VALUES (3, 100, 'IDLE', 3);
-INSERT INTO drone VALUES (4, 100, 'IDLE', 4);
+INSERT INTO drone (id, battery_capacity, state, model_id) VALUES (1, 100, 'IDLE', 1);
+INSERT INTO drone (id, battery_capacity, state, model_id) VALUES (2, 100, 'IDLE', 2);
+INSERT INTO drone (id, battery_capacity, state, model_id) VALUES (3, 100, 'IDLE', 3);
+INSERT INTO drone (id, battery_capacity, state, model_id) VALUES (4, 100, 'IDLE', 4);
 
 INSERT INTO serial_number VALUES (1, 'LO03X-KYWQG-VIOXE-QWTNL-AOKPF-MMAEC');
 INSERT INTO serial_number VALUES (2, 'BO0OS-IDPOI-V0F3N-IM1O1-P1FTO-MAYMK');

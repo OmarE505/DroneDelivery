@@ -7,7 +7,7 @@ import com.omarE505.DroneDelivery.entity.SerialNumber;
 
 public interface SerialNumberRepository extends JpaRepository<SerialNumber, Long> {
     
-    @Query("SELECT s FROM SerialNumber s where s.value = ?1")
-    public SerialNumber findByValue(String value);
+    @Query("SELECT s FROM SerialNumber s where s.serialValue = ?1")
+    public SerialNumber findByValue(String serialValue);
     
 }

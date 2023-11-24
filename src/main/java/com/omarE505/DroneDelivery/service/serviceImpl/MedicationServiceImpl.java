@@ -5,9 +5,7 @@ import java.util.Optional;
 
 import com.mifmif.common.regex.Generex;
 import com.omarE505.DroneDelivery.dto.MedicationDto;
-import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
-import com.omarE505.DroneDelivery.repository.CustomMedRepository;
 import com.omarE505.DroneDelivery.repository.MedicationRepository;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
@@ -26,8 +24,6 @@ public class MedicationServiceImpl implements MedicationService {
     private final ModelMapper mapper;
 
     private final MedicationRepository medicationRepository;
-
-    private final CustomMedRepository cMedRepository;
 
     @Override
     public List<Medication> findAll() {
@@ -49,11 +45,6 @@ public class MedicationServiceImpl implements MedicationService {
         Medication medication = this.medicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found"));
         return medication;
-    }
-
-    @Override
-    public Drone checkLoadedMedications(long droneId) throws ResourceNotFoundException {
-        return this.cMedRepository.checkLoadedMedications(droneId);
     }
 
     @Override

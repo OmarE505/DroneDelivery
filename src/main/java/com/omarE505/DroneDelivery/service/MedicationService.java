@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.omarE505.DroneDelivery.dto.MedicationDto;
-import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
 
@@ -21,7 +20,5 @@ public interface MedicationService {
     public Medication update(Optional<Long> id, MedicationDto dto) throws ResourceNotFoundException, IllegalArgumentException;
 
     public Medication imageUpdate(Long id, byte[] imageData) throws ResourceNotFoundException, IllegalArgumentException;
-
-    public Drone checkLoadedMedications(long droneId) throws ResourceNotFoundException;
 
 }

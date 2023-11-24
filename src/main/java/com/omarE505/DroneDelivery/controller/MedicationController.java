@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.zip.DataFormatException;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import com.omarE505.DroneDelivery.dto.MedicationDto;
 import com.omarE505.DroneDelivery.entity.Medication;

@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import com.omarE505.DroneDelivery.dto.DroneDto;
 import com.omarE505.DroneDelivery.entity.Drone;
@@ -15,6 +16,7 @@ import com.omarE505.DroneDelivery.service.DroneService;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.RequirementNotMetException;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
+import com.omarE505.DroneDelivery.utils.State;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -85,12 +87,6 @@ public class DroneController {
         return ResponseEntity.ok(droneService.load(meds, droneId));
     }
 
-    @GetMapping("/fromLoadedMedications/{droneId}")
-    public ResponseEntity<Drone> checkLoadedMedications(@PathVariable Long droneId)
-            throws ResourceNotFoundException {
-        return ResponseEntity.ok(medicationService.checkLoadedMedications(droneId));
-    }
-
     @GetMapping("/medications/{droneId}")
     public ResponseEntity<List<Medication>> getMedications(@PathVariable Long droneId)
             throws ResourceNotFoundException {
@@ -98,8 +94,14 @@ public class DroneController {
     }
 
     @GetMapping("/available/{totalMedicationWeight}")
-    public ResponseEntity<List<Drone>> findAvailable(@PathVariable("totalMedicationWeight") int totalWeight) {
-        return ResponseEntity.ok(droneService.findAvailable(totalWeight));
+    public ResponseEntity<List<Drone>> findAvailable(@PathVariable("totalMedicationWeight") int totalWeight)
+            throws ResourceNotFoundException {
+        List<Drone> drones = droneService.findAll();
+
+        List<Drone> filteredDrones = drones.stream().filter(drone -> drone.getState().equals(State.IDLE))
+                .filter(drone -> drone.getModel().getValue() >= totalWeight).collect(Collectors.toList());
+        
+        return ResponseEntity.ok(filteredDrones);
     }
 
     @GetMapping("/batteryLevel/{droneId}")

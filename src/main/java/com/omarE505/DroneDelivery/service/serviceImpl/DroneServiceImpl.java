@@ -10,7 +10,6 @@ import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
 import com.omarE505.DroneDelivery.entity.Model;
 import com.omarE505.DroneDelivery.entity.SerialNumber;
-import com.omarE505.DroneDelivery.repository.CustomDroneRepository;
 import com.omarE505.DroneDelivery.repository.DroneRepository;
 import com.omarE505.DroneDelivery.repository.MedicationRepository;
 import com.omarE505.DroneDelivery.repository.SerialNumberRepository;
@@ -31,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class DroneServiceImpl implements DroneService {
 
     private final DroneRepository droneRepository;
-
-    private final CustomDroneRepository cDroneRepository;
 
     private final MedicationRepository medicationRepository;
 
@@ -73,28 +70,24 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public List<Drone> findAvailable(int totalWeight) {
-        return this.cDroneRepository.findAvailable(totalWeight);
-    }
-
-    @Override
     public Drone load(List<Medication> medications, Long droneId)
             throws ResourceNotFoundException, IllegalArgumentException, RequirementNotMetException {
         try {
             Drone drone = this.droneRepository.findById(droneId)
                     .orElseThrow(() -> new ResourceNotFoundException("Drone not found"));
 
-            int totalMedicationWeight = medications.stream().map(Medication::getWeight).reduce(0, Integer::sum);
-            boolean isAvailable = this.findAvailable(totalMedicationWeight).stream()
-                    .anyMatch(dr -> dr.getId() == droneId);
-            if (isAvailable && drone.getBatteryCapacity() >= 25) {
+            int totalMedicationWeight = medications.stream().mapToInt(Medication::getWeight).reduce(0, Integer::sum);
+            Model droneModel = drone.getModel();
+            if (droneModel != null && droneModel.getValue() >= totalMedicationWeight
+                    && drone.getBatteryCapacity() >= 25) {
                 drone.setState(State.LOADING);
+                System.out.println("Drone is currently ... : " + drone.getState());
                 this.droneRepository.save(drone);
                 drone.setMedications(medications);
                 drone.setState(State.LOADED);
+                System.out.println("Drone is currently ... : " + drone.getState());
                 Drone savedDrone = this.droneRepository.save(drone);
-                for (int i = 0; i < medications.size(); i++) {
-                    Medication med = medications.get(i);
+                for (Medication med : medications) {
                     med.setDrone(drone);
                     medicationRepository.save(med);
                 }
@@ -102,9 +95,9 @@ public class DroneServiceImpl implements DroneService {
             } else {
                 drone.setState(State.IDLE);
                 this.droneRepository.save(drone);
-                String errorMessage = isAvailable
-                        ? "Drone battery capacity is below 25%"
-                        : "Total medication weight is above drone model specification or Drone is not in Idle state";
+                String errorMessage = (droneModel == null || droneModel.getValue() < totalMedicationWeight)
+                        ? "Total medication weight exceeds drone model specification"
+                        : "Drone battery capacity is below 25%";
                 throw new RequirementNotMetException(errorMessage);
             }
         } catch (IllegalArgumentException exc) {

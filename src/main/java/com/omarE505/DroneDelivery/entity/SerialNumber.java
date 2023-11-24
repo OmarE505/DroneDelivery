@@ -1,14 +1,14 @@
 package com.omarE505.DroneDelivery.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -30,7 +30,7 @@ public class SerialNumber {
 
     @NotBlank(message = "Valid serial number is required")
     @Size(max = 100)
-    private String value;
+    private String serialValue;
 
     @OneToOne
     @MapsId
@@ -39,7 +39,7 @@ public class SerialNumber {
     private Drone drone;
 
     public SerialNumber(String value) {
-        this.value = value;
+        this.serialValue = value;
     }
 
 }
