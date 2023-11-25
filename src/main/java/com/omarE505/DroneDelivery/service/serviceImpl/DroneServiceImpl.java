@@ -22,11 +22,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class DroneServiceImpl implements DroneService {
 
     private final DroneRepository droneRepository;
@@ -37,6 +34,14 @@ public class DroneServiceImpl implements DroneService {
 
     private final ModelMapper mapper;
 
+    public DroneServiceImpl(DroneRepository droneRepository, MedicationRepository medicationRepository,
+            SerialNumberRepository serialNumberRepository, ModelMapper mapper) {
+        this.droneRepository = droneRepository;
+        this.medicationRepository = medicationRepository;
+        sNumberRepository = serialNumberRepository;
+        this.mapper = mapper;
+    }
+
     @Override
     public List<Drone> findAll() {
         return droneRepository.findAll();
@@ -44,25 +49,23 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     public Drone register(DroneDto drone) throws RequirementNotMetException, IllegalArgumentException {
-        Optional<Long> optDroneCount = Optional.ofNullable(this.droneRepository.count());
+        Optional<Long> optDroneCount = Optional.ofNullable(droneRepository.count());
         if (optDroneCount.isPresent() && optDroneCount.get() < 10) {
             try {
-                String serialNumber = this.generateSerialNumber();
-                boolean exists = this.sNumberRepository.findByValue(serialNumber) != null;
+                String serialNumber = generateSerialNumber();
+                boolean exists = sNumberRepository.findByValue(serialNumber) != null;
                 while (exists) {
-                    serialNumber = this.generateSerialNumber();
-                    exists = this.sNumberRepository.findByValue(serialNumber) != null;
+                    serialNumber = generateSerialNumber();
+                    exists = sNumberRepository.findByValue(serialNumber) != null;
                 }
                 SerialNumber number = new SerialNumber(serialNumber);
                 Model model = new Model(drone.getModel().getName());
-                System.out.println("Model Created ...");
-
                 Drone newDrone = new Drone(number, model);
                 System.out.println("Drone created ...");
                 newDrone.setBatteryCapacity(100);
                 newDrone.setState(State.IDLE);
                 number.setDrone(newDrone);
-                return this.droneRepository.save(newDrone);
+                return droneRepository.save(newDrone);
             } catch (IllegalArgumentException exception) {
                 throw new IllegalArgumentException("Drone cannot be null");
             }
@@ -75,7 +78,7 @@ public class DroneServiceImpl implements DroneService {
     public Drone load(List<Medication> medications, Long droneId)
             throws ResourceNotFoundException, IllegalArgumentException, RequirementNotMetException {
         try {
-            Drone drone = this.droneRepository.findById(droneId)
+            Drone drone = droneRepository.findById(droneId)
                     .orElseThrow(() -> new ResourceNotFoundException("Drone not found"));
 
             int totalMedicationWeight = medications.stream().mapToInt(Medication::getWeight).reduce(0, Integer::sum);
@@ -84,11 +87,11 @@ public class DroneServiceImpl implements DroneService {
                     && drone.getBatteryCapacity() >= 25) {
                 drone.setState(State.LOADING);
                 System.out.println("Drone is currently ... : " + drone.getState());
-                this.droneRepository.save(drone);
+                droneRepository.save(drone);
                 drone.setMedications(medications);
                 drone.setState(State.LOADED);
                 System.out.println("Drone is currently ... : " + drone.getState());
-                Drone savedDrone = this.droneRepository.save(drone);
+                Drone savedDrone = droneRepository.save(drone);
                 for (Medication med : medications) {
                     med.setDrone(drone);
                     medicationRepository.save(med);
@@ -96,7 +99,7 @@ public class DroneServiceImpl implements DroneService {
                 return savedDrone;
             } else {
                 drone.setState(State.IDLE);
-                this.droneRepository.save(drone);
+                droneRepository.save(drone);
                 String errorMessage = (droneModel == null || droneModel.getValue() < totalMedicationWeight)
                         ? "Total medication weight exceeds drone model specification"
                         : "Drone battery capacity is below 25%";
@@ -109,14 +112,14 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     public Drone findById(long id) throws ResourceNotFoundException {
-        Drone drone = this.droneRepository.findById(id)
+        Drone drone = droneRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Drone not found"));
         return drone;
     }
 
     @Override
     public Drone update(Optional<Long> id, DroneDto drone) throws ResourceNotFoundException, IllegalArgumentException {
-        Drone existingDrone = this.droneRepository
+        Drone existingDrone = droneRepository
                 .findById(id.orElseThrow(() -> new ResourceNotFoundException("Drone not found. id is null")))
                 .orElseThrow(() -> new ResourceNotFoundException("Drone not found"));
         SerialNumber oldSerialNumber = existingDrone.getSerialNumber();
@@ -128,7 +131,7 @@ public class DroneServiceImpl implements DroneService {
         }
         existingDrone.setSerialNumber(oldSerialNumber); // serial number should not be updated
         try {
-            this.droneRepository.save(existingDrone);
+            droneRepository.save(existingDrone);
             return existingDrone;
         } catch (IllegalArgumentException exc) {
             throw new IllegalArgumentException("Drone cannot be null");
@@ -137,7 +140,7 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     public List<Medication> getMedications(long droneId) throws ResourceNotFoundException {
-        Drone drone = this.droneRepository.findById(droneId)
+        Drone drone = droneRepository.findById(droneId)
                 .orElseThrow(() -> new ResourceNotFoundException("Drone not found"));
         Optional<List<Medication>> optMeds = Optional.of(drone.getMedications());
         return optMeds.orElse(Collections.emptyList());
@@ -145,10 +148,10 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     public void delete(long id) throws ResourceNotFoundException, IllegalArgumentException {
-        Drone drone = this.droneRepository.findById(id)
+        Drone drone = droneRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Drone not found"));
         try {
-            this.droneRepository.delete(drone);
+            droneRepository.delete(drone);
         } catch (IllegalArgumentException exc) {
             throw new IllegalArgumentException("Drone cannot be null");
         }
