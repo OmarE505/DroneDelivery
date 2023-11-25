@@ -70,7 +70,7 @@ public class DroneController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable long id) throws ResourceNotFoundException, IllegalArgumentException {
-        this.droneService.delete(id);
+        droneService.delete(id);
         return ResponseEntity.ok("");
     }
 
