@@ -55,8 +55,10 @@ public class DroneServiceImpl implements DroneService {
                 }
                 SerialNumber number = new SerialNumber(serialNumber);
                 Model model = new Model(drone.getModel().getName());
+                System.out.println("Model Created ...");
 
                 Drone newDrone = new Drone(number, model);
+                System.out.println("Drone created ...");
                 newDrone.setBatteryCapacity(100);
                 newDrone.setState(State.IDLE);
                 number.setDrone(newDrone);

@@ -87,7 +87,8 @@ public class MedicationServiceImpl implements MedicationService {
     }
 
     private String getCode() {
-        Generex generex = new Generex("[A-Z0-9]{11,15}_*");
-        return generex.random();
+        Generex generex = new Generex("[A-Z0-9_]{10,15}");
+        String random = generex.random();
+        return random;
     }
 }

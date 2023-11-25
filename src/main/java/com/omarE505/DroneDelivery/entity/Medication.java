@@ -45,7 +45,7 @@ public class Medication {
     private int weight;
 
     @Column(name = "code")
-    @Pattern(regexp = "^[A-Z0-9_]{11,15}$")
+    @Pattern(regexp = "^[A-Z0-9_]{10,15}$")
     @NotBlank(message = "Valid code is required")
     private String code;
 

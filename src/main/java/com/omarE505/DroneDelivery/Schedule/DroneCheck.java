@@ -21,7 +21,7 @@ public class DroneCheck {
     @Autowired
     private AuditDroneRepository aDroneRepository;
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 115000)
     public void batteryCheck() {
         System.out.println("Working...");
         List<Drone> drones = droneRepository.findAll();
