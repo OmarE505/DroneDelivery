@@ -88,7 +88,7 @@ public class DroneServiceImpl implements DroneService {
                 drone.setState(State.LOADING);
                 System.out.println("Drone is currently ... : " + drone.getState());
                 droneRepository.save(drone);
-                Thread.sleep(5000);
+                Thread.sleep(2000);
                 drone.setMedications(medications);
                 drone.setState(State.LOADED);
                 System.out.println("Drone is currently ... : " + drone.getState());
