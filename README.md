@@ -9,7 +9,6 @@ A service via REST API that allows clients to communicate with drones (i.e. **di
   * Test: `.\mvnw test`
 ## Documentation:
 Content-type: application.json
-
 ### Drone Controller: `localhost:8080/api/drones`
    * **`GET` Get all drones: `localhost:8080/api/drones`**
 
