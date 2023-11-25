@@ -13,7 +13,7 @@ Content-type: application.json
    * #### `GET` Get all drones: `localhost:8080/api/drones`
    * #### `GET` Get a specific drone: `localhost:8080/api/drones/{id}`
    * #### `POST` Register a drone: `localhost:8080/api/drones`
-       Request Body Example:
+       Request Body Example: (models can be: LIGHT_WEIGHT, CRUISER_WEIGHT, MIDDLE_WEIGHT, HEAVY_WEIGHT)
        ```JSON
       {
         "model" : {
