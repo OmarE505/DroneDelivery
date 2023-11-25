@@ -4,7 +4,7 @@
 A service via REST API that allows clients to communicate with drones (i.e. **dispatch controller**).
 
 ## Build Commands:
-  * Build:
+  * Build: `./mvnw package`
   * Run: `./mvnw spring-boot:run`
   * Test: `./mvnw test`
 ## Documentation:
@@ -45,6 +45,7 @@ Content-type: application.json
    * #### `GET` Get medications from drone: `localhost:8080/api/drones/medications/{droneId}` Checks medications that are currently loaded on a specific drone.
    * #### `GET` Get available drones: `localhost:8080/api/drones/available/{totalMedicationWeight}` Checks available drones that can load the specified medication weight.
    * #### `GET` Get drone battery level: `localhost:8080/api/drones/batterLevel/{droneId}` Checks current battery capacity of a specified drone.
+   * #### Note that when a drone gets loaded with medication it gets set to the "LOADED" state , while in loaded state and the battery is still above 25% , the drone drains the battery every (fixed delay) till the battery reaches 25% , then the drone become in idle state and recharges the battery 5% at a time.
 
 ### Medication Controller: `localhost:8080/api/medications`
   * #### `GET` Get all medications: `localhost:8080/api/medications`
