@@ -88,6 +88,7 @@ public class DroneServiceImpl implements DroneService {
                 drone.setState(State.LOADING);
                 System.out.println("Drone is currently ... : " + drone.getState());
                 droneRepository.save(drone);
+                Thread.sleep(5000);
                 drone.setMedications(medications);
                 drone.setState(State.LOADED);
                 System.out.println("Drone is currently ... : " + drone.getState());
@@ -107,6 +108,9 @@ public class DroneServiceImpl implements DroneService {
             }
         } catch (IllegalArgumentException exc) {
             throw new IllegalArgumentException("Drone cannot be null");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RequirementNotMetException("Interruption occured while loading");
         }
     }
 
