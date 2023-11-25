@@ -54,6 +54,8 @@ Content-type: application.json
 
    * **`GET` Get drone battery level: `localhost:8080/api/drones/batterLevel/{droneId}` Checks current battery capacity of a specified drone.**
 
+   * **Note that when a drone gets loaded with medicine using the load method , the drone become in "LOADED" state, while in loaded state the drone loses 5% of battery every (specified schedule) time till battery reaches 25% , then state of drone changes to IDLE, while in IDLE state if the drone has less battery than 100% it will recharge 5% every (specified schedule) time till it reaches 100% back.
+
 ### Medication Controller: `localhost:8080/api/medications`
 
   * **`GET` Get all medications: `localhost:8080/api/medications`**
