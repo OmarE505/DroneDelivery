@@ -4,9 +4,9 @@
 A service via REST API that allows clients to communicate with drones (i.e. **dispatch controller**).
 
 ## Build Commands:
-  * Build: `./mvnw package`
-  * Run: `./mvnw spring-boot:run`
-  * Test: `./mvnw test`
+  * Build: `./mvn package`
+  * Run: `./mvn spring-boot:run`
+  * Test: `./mvn test`
 ## Documentation:
 Content-type: application.json
 ### Drone Controller: `localhost:8080/api/drones`
