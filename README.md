@@ -3,6 +3,31 @@
 ## Introduction:
 A service via REST API that allows clients to communicate with drones (i.e. **dispatch controller**).
 
+## Task requirements:
+We have a fleet of **10 drones**. A drone is capable of carrying devices, other than cameras, and capable of delivering small loads. For our use case**the load is medications**.
+
+**A **Drone** has:**
+
+* [x] serial number (100 characters max)
+* [x] model (Lightweight, Middleweight, Cruiserweight, Heavyweight)
+* [x] weight limit (500gr max)
+* [x] battery capacity (percentage)
+* [x] state (IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING).
+
+Each **Medication** has: 
+
+* [x] name (allowed only letters, numbers, ‘-‘, ‘_’)
+* [x] weight
+* [x] code (allowed only upper case letters, underscore and numbers)
+* [x] image (picture of the medication case).
+
+**The service should allow:**
+
+* [x] registering a drone
+* [x] loading a drone with medication items
+* [x] checking loaded medication items for a given drone;
+* [x] checking available drones for loading
+* [x] check drone battery level for a given drone
 ## Build Commands:
   * Build: `.\mvnw package`
   * Run: `.\mvnw spring-boot:run`
