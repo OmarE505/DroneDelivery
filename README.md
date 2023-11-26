@@ -44,7 +44,7 @@ Content-type: application.json
        ```JSON
       {
         "model" : {
-          "name" : "LIGHT_WEIGHT"
+          "id" : 1
           }
       }
        ```
@@ -60,9 +60,7 @@ Content-type: application.json
            },
          "batteryCapacity": 100,
          "model": {
-           "id": 5,
-           "value": 200,
-           "name": "MIDDLE_WEIGHT"
+           "id": 1
            },
          "state": "IDLE",
          "medications": []
