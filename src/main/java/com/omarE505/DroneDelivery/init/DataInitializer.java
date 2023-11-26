@@ -33,17 +33,17 @@ public class DataInitializer implements ApplicationRunner {
     }
     
     private void initializeDrones() {
-        DroneDto droneDto = new DroneDto();
+        DroneDto droneDto1 = new DroneDto();
         DroneDto droneDto2 = new DroneDto();
         DroneDto droneDto3 = new DroneDto();
         DroneDto droneDto4 = new DroneDto();
 
-        droneDto.setModel(new Model(ModelEnum.LIGHT_WEIGHT));
+        droneDto1.setModel(new Model(ModelEnum.LIGHT_WEIGHT));
         droneDto2.setModel(new Model(ModelEnum.CRUISER_WEIGHT));
         droneDto3.setModel(new Model(ModelEnum.MIDDLE_WEIGHT));
         droneDto4.setModel(new Model(ModelEnum.HEAVY_WEIGHT));
         try {
-            droneService.register(droneDto);
+            droneService.register(droneDto1);
             droneService.register(droneDto2);
             droneService.register(droneDto3);
             droneService.register(droneDto4);
@@ -54,7 +54,7 @@ public class DataInitializer implements ApplicationRunner {
     
     private void initializeMedications() {
         Random random = new Random();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             MedicationDto med = new MedicationDto();
             med.setName("med" + i);
             int randomNumber = random.nextInt(9);
