@@ -40,6 +40,7 @@ Content-type: application.json
    * **`GET` Get a specific drone: `localhost:8080/api/drones/{id}`**
 
    * **`POST` Register a drone: `localhost:8080/api/drones`**
+   
        Request Body Example:
        ```JSON
       {
@@ -50,6 +51,7 @@ Content-type: application.json
        ```
 
    * **`PUT` Update a drone: `localhost:8080/api/drones/{id}`**
+
        Request Body Example:
        ```JSON
        
@@ -86,6 +88,7 @@ Content-type: application.json
   * **`GET` Get a specific medication: `localhost:8080/api/medications/{id}`**
 
   * **`POST` Add a new medication: `localhost:8080/api/medications`**
+
     Request Body Example:
     ```JSON
     {
@@ -97,6 +100,7 @@ Content-type: application.json
   * **`PUT` Upload medication image: `localhost:8080/api/medications/{id}` Content-type: multipart/form-data. It accepts a request param of type file.**
 
   * **`PUT` Update medication: `localhost:8080/api/medications/{id}`**
+
     Request Body Example:
     ```JSON
     {
