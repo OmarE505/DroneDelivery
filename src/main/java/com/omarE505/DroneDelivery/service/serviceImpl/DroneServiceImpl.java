@@ -12,6 +12,7 @@ import com.omarE505.DroneDelivery.entity.Model;
 import com.omarE505.DroneDelivery.entity.SerialNumber;
 import com.omarE505.DroneDelivery.repository.DroneRepository;
 import com.omarE505.DroneDelivery.repository.MedicationRepository;
+import com.omarE505.DroneDelivery.repository.ModelRepository;
 import com.omarE505.DroneDelivery.repository.SerialNumberRepository;
 import com.omarE505.DroneDelivery.service.DroneService;
 import com.omarE505.DroneDelivery.utils.RequirementNotMetException;
@@ -34,12 +35,15 @@ public class DroneServiceImpl implements DroneService {
 
     private final ModelMapper mapper;
 
+    private final ModelRepository modelRepository;
+
     public DroneServiceImpl(DroneRepository droneRepository, MedicationRepository medicationRepository,
-            SerialNumberRepository serialNumberRepository, ModelMapper mapper) {
+            SerialNumberRepository serialNumberRepository, ModelMapper mapper, ModelRepository modelRepository) {
         this.droneRepository = droneRepository;
         this.medicationRepository = medicationRepository;
         sNumberRepository = serialNumberRepository;
         this.mapper = mapper;
+        this.modelRepository = modelRepository;
     }
 
     @Override
@@ -59,7 +63,11 @@ public class DroneServiceImpl implements DroneService {
                     exists = sNumberRepository.findByValue(serialNumber) != null;
                 }
                 SerialNumber number = new SerialNumber(serialNumber);
-                Model model = new Model(drone.getModel().getName());
+
+                // Fetch existing model from repository based on ModelEnum
+                Model model = modelRepository.findById(drone.getModel().getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Model not found"));
+
                 Drone newDrone = new Drone(number, model);
                 System.out.println("Drone created ...");
                 newDrone.setBatteryCapacity(100);
@@ -129,7 +137,8 @@ public class DroneServiceImpl implements DroneService {
         SerialNumber oldSerialNumber = existingDrone.getSerialNumber();
         mapper.map(drone, existingDrone);
         if (drone.getModel() != null) {
-            Model model = drone.getModel();
+            Model model = modelRepository.findById(drone.getModel().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Model not found"));
             model.setValue();
             existingDrone.setModel(model);
         }

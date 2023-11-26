@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
@@ -52,10 +53,9 @@ public class Drone {
     @Range(min = 0, max = 100)
     private int batteryCapacity;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "model_id", referencedColumnName = "id")
     @NotNull(message = "Valid model type is required")
-    @JsonManagedReference
     private Model model;
 
     @Column(name = "state")

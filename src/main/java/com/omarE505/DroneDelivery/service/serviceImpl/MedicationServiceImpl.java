@@ -14,16 +14,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class MedicationServiceImpl implements MedicationService {
 
     private final ModelMapper mapper;
 
     private final MedicationRepository medicationRepository;
+
+    public MedicationServiceImpl(ModelMapper mapper, MedicationRepository medicationRepository) {
+        this.mapper = mapper;
+        this.medicationRepository = medicationRepository;
+    }
 
     @Override
     public List<Medication> findAll() {
@@ -36,23 +38,23 @@ public class MedicationServiceImpl implements MedicationService {
         medication.setCode(code);
         Medication newMed = new Medication();
         mapper.map(medication, newMed);
-        Medication savedMed = this.medicationRepository.save(newMed);
+        Medication savedMed = medicationRepository.save(newMed);
         return savedMed;
     }
 
     @Override
     public Medication findById(long id) throws ResourceNotFoundException {
-        Medication medication = this.medicationRepository.findById(id)
+        Medication medication = medicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found"));
         return medication;
     }
 
     @Override
     public void delete(long id) throws ResourceNotFoundException, IllegalArgumentException {
-        Medication medication = this.medicationRepository.findById(id)
+        Medication medication = medicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found"));
         try {
-            this.medicationRepository.delete(medication);
+            medicationRepository.delete(medication);
         } catch (IllegalArgumentException exc) {
             throw new IllegalArgumentException("Medication cannot be null");
         }
@@ -60,12 +62,12 @@ public class MedicationServiceImpl implements MedicationService {
 
     @Override
     public Medication update(Optional<Long> id, MedicationDto dto) throws ResourceNotFoundException, IllegalArgumentException {
-        Medication medication = this.medicationRepository
+        Medication medication = medicationRepository
                 .findById(id.orElseThrow(() -> new ResourceNotFoundException("Medication not found. id is null")))
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found"));
         mapper.map(dto, medication);
         try {
-            this.medicationRepository.save(medication);
+            medicationRepository.save(medication);
             return medication;
         } catch (IllegalArgumentException exc) {
             throw new IllegalArgumentException("Medication cannot be null");
@@ -75,11 +77,11 @@ public class MedicationServiceImpl implements MedicationService {
     @Override
     public Medication imageUpdate(Long id, byte[] imageData)
             throws ResourceNotFoundException, IllegalArgumentException {
-        Medication medication = this.medicationRepository.findById(id)
+        Medication medication = medicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Medication not found"));
         medication.setImage(imageData);
         try {
-            this.medicationRepository.save(medication);
+            medicationRepository.save(medication);
             return medication;
         } catch (IllegalArgumentException exc) {
             throw new IllegalArgumentException("Medication cannot be null");

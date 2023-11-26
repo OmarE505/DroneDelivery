@@ -12,6 +12,8 @@ import jakarta.validation.constraints.NotNull;
 import com.omarE505.DroneDelivery.dto.DroneDto;
 import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
+import com.omarE505.DroneDelivery.entity.Model;
+import com.omarE505.DroneDelivery.repository.ModelRepository;
 import com.omarE505.DroneDelivery.service.DroneService;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.RequirementNotMetException;
@@ -40,9 +42,12 @@ public class DroneController {
     @Autowired
     private MedicationService medicationService;
 
-    public DroneController(DroneService droneService, MedicationService medicationService) {
+    private ModelRepository modelRepository;
+
+    public DroneController(DroneService droneService, MedicationService medicationService, ModelRepository modelRepository) {
         this.droneService = droneService;
         this.medicationService = medicationService;
+        this.modelRepository = modelRepository;
     }
 
     @GetMapping
@@ -53,6 +58,11 @@ public class DroneController {
     @PostMapping
     public ResponseEntity<Drone> register(@NotNull @Valid @RequestBody DroneDto dto)
             throws IllegalArgumentException, RequirementNotMetException {
+        Model model = modelRepository.findById(dto.getModel().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Model not Found"));
+        
+        dto.setModel(model);
+
         return ResponseEntity.ok(droneService.register(dto));
     }
 

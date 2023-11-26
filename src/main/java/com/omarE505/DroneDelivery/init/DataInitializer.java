@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.omarE505.DroneDelivery.dto.DroneDto;
 import com.omarE505.DroneDelivery.dto.MedicationDto;
 import com.omarE505.DroneDelivery.entity.Model;
+import com.omarE505.DroneDelivery.repository.ModelRepository;
 import com.omarE505.DroneDelivery.service.DroneService;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.ModelEnum;
@@ -21,27 +22,63 @@ public class DataInitializer implements ApplicationRunner {
 
     private final MedicationService medicationService;
 
-    public DataInitializer(DroneService droneService, MedicationService medicationService) {
+    private final ModelRepository modelRepository;
+
+    public DataInitializer(DroneService droneService, MedicationService medicationService, ModelRepository modelRepository) {
         this.droneService = droneService;
         this.medicationService = medicationService;
+        this.modelRepository = modelRepository;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        initializeModel();
         initializeDrones();
         initializeMedications();
     }
+
+    private void initializeModel() {
+        try{
+            if (modelRepository.findByName(ModelEnum.LIGHT_WEIGHT).isEmpty()) {
+                modelRepository.save(new Model(ModelEnum.LIGHT_WEIGHT));
+            }
+
+            if (modelRepository.findByName(ModelEnum.CRUISER_WEIGHT).isEmpty()) {
+                modelRepository.save(new Model(ModelEnum.CRUISER_WEIGHT));
+            }
+
+            if (modelRepository.findByName(ModelEnum.MIDDLE_WEIGHT).isEmpty()) {
+                modelRepository.save(new Model(ModelEnum.MIDDLE_WEIGHT));
+            }
+
+            if (modelRepository.findByName(ModelEnum.HEAVY_WEIGHT).isEmpty()) {
+                modelRepository.save(new Model(ModelEnum.HEAVY_WEIGHT));
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
     
     private void initializeDrones() {
+        Model model1 = modelRepository.findByName(ModelEnum.LIGHT_WEIGHT)
+                .orElseThrow(() -> new IllegalArgumentException("Model not found"));
+        Model model2 = modelRepository.findByName(ModelEnum.CRUISER_WEIGHT)
+                .orElseThrow(() -> new IllegalArgumentException("Model not found"));
+        Model model3 = modelRepository.findByName(ModelEnum.MIDDLE_WEIGHT)
+                .orElseThrow(() -> new IllegalArgumentException("Model not found"));
+        Model model4 = modelRepository.findByName(ModelEnum.HEAVY_WEIGHT)
+                .orElseThrow(() -> new IllegalArgumentException("Model not found"));
+        
+
         DroneDto droneDto1 = new DroneDto();
         DroneDto droneDto2 = new DroneDto();
         DroneDto droneDto3 = new DroneDto();
         DroneDto droneDto4 = new DroneDto();
 
-        droneDto1.setModel(new Model(ModelEnum.LIGHT_WEIGHT));
-        droneDto2.setModel(new Model(ModelEnum.CRUISER_WEIGHT));
-        droneDto3.setModel(new Model(ModelEnum.MIDDLE_WEIGHT));
-        droneDto4.setModel(new Model(ModelEnum.HEAVY_WEIGHT));
+        droneDto1.setModel(model1);
+        droneDto2.setModel(model2);
+        droneDto3.setModel(model3);
+        droneDto4.setModel(model4);
         try {
             droneService.register(droneDto1);
             droneService.register(droneDto2);

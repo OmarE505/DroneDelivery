@@ -1,5 +1,6 @@
 package com.omarE505.DroneDelivery.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,11 +8,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.omarE505.DroneDelivery.utils.ModelEnum;
 
 import lombok.AccessLevel;
@@ -39,9 +42,9 @@ public class Model {
     @NotNull(message = "Name cannot be null")
     private ModelEnum name;
 
-    @OneToOne(mappedBy = "model")
-    @JsonBackReference
-    private Drone drone;
+    @OneToMany(mappedBy = "model", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Drone> drone;
 
     public Model(ModelEnum name) {
         this.setValue(name);

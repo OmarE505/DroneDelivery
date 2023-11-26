@@ -53,7 +53,7 @@ public class DroneCheck {
                         "Drone ID: " + drone.getId() + ", Battery Percentage: " + batteryPercentageAfter);
 
                 // Save audit information
-                AuditDrone aDrone = new AuditDrone(state, batteryCapacity);
+                AuditDrone aDrone = new AuditDrone(state, batteryPercentageAfter);
                 aDrone.setDroneId(drone.getId());
                 aDroneRepository.save(aDrone);
             } catch (IllegalArgumentException exc) {
