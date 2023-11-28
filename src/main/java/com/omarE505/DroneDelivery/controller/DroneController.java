@@ -1,14 +1,5 @@
 package com.omarE505.DroneDelivery.controller;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-
 import com.omarE505.DroneDelivery.dto.DroneDto;
 import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
@@ -19,18 +10,16 @@ import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.RequirementNotMetException;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
 import com.omarE505.DroneDelivery.utils.State;
-
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/drones")
@@ -60,7 +49,7 @@ public class DroneController {
             throws IllegalArgumentException, RequirementNotMetException {
         Model model = modelRepository.findById(dto.getModel().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Model not Found"));
-        
+
         dto.setModel(model);
 
         return ResponseEntity.ok(droneService.register(dto));
@@ -86,12 +75,11 @@ public class DroneController {
 
     @GetMapping("/load")
     public ResponseEntity<Drone> load(@RequestParam("medicationIds") List<Long> medicationIds,
-            @RequestParam("droneId") Long droneId)
+                                      @RequestParam("droneId") Long droneId)
             throws ResourceNotFoundException, IllegalArgumentException, RequirementNotMetException {
         List<Medication> meds = new ArrayList<Medication>();
-        Iterator<Long> itr = medicationIds.iterator();
-        while (itr.hasNext()) {
-            Medication med = medicationService.findById(itr.next());
+        for (Long medicationId : medicationIds) {
+            Medication med = medicationService.findById(medicationId);
             meds.add(med);
         }
         return ResponseEntity.ok(droneService.load(meds, droneId));
@@ -110,7 +98,7 @@ public class DroneController {
 
         List<Drone> filteredDrones = drones.stream().filter(drone -> drone.getState().equals(State.IDLE))
                 .filter(drone -> drone.getModel().getValue() >= totalWeight).collect(Collectors.toList());
-        
+
         return ResponseEntity.ok(filteredDrones);
     }
 

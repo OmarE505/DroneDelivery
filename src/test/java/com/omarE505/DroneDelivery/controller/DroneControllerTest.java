@@ -214,9 +214,9 @@ public class DroneControllerTest {
 
     @Test
     void testLoadWithInvalidId() throws ResourceNotFoundException, RequirementNotMetException {
-        Long invalidDroneId = 1L; // Invalid Drone ID
+        Long invalidDroneId = -1L; // Invalid Drone ID
         List<Long> invalidMedicationIds = new ArrayList<>(); // Invalid medication IDs
-        invalidMedicationIds.add(-1L); // Adding an invalid medication ID
+        invalidMedicationIds.add(1L); // Adding an invalid medication ID
 
         // Mock the behavior to throw ResourceNotFoundException when loading with
         // invalid data
