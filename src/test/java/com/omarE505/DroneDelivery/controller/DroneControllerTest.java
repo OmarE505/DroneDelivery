@@ -1,27 +1,5 @@
 package com.omarE505.DroneDelivery.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.*;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import com.omarE505.DroneDelivery.dto.DroneDto;
 import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
@@ -33,6 +11,26 @@ import com.omarE505.DroneDelivery.utils.ModelEnum;
 import com.omarE505.DroneDelivery.utils.RequirementNotMetException;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
 import com.omarE505.DroneDelivery.utils.State;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DroneControllerTest {
@@ -84,14 +82,12 @@ public class DroneControllerTest {
         Model model = new Model();
         droneDto.setModel(model);
 
-        droneDto.getModel().getName();
-
         assertThrows(IllegalArgumentException.class, () -> droneController.register(droneDto));
     }
 
     @Test
     public void testFindDroneById() throws ResourceNotFoundException {
-        Long id = 1L;
+        long id = 1L;
         Drone drone = new Drone();
         when(droneService.findById(id)).thenReturn(drone);
 
@@ -169,7 +165,7 @@ public class DroneControllerTest {
 
     @Test
     public void testDeleteDrone() throws ResourceNotFoundException {
-        Long id = 1L;
+        long id = 1L;
 
         droneController.delete(id);
 
@@ -243,11 +239,19 @@ public class DroneControllerTest {
                 .thenThrow(ResourceNotFoundException.class);
 
         // Invoke the load method of the controller with wrong medication IDs
-        assertThrows(ResourceNotFoundException.class, () -> droneController.load(wrongMedicationIds, validDroneId));
+        Exception thrownException = assertThrows(ResourceNotFoundException.class,
+                () -> droneController.load(wrongMedicationIds, validDroneId));
 
         // Verify that the service method was called with the provided wrong medication
         // IDs and drone ID
         verify(droneService, times(1)).load(anyList(), eq(validDroneId));
+
+        // Verify that the thrown exception is not null (meaning an exception was
+        // thrown)
+        assertNotNull(thrownException);
+
+        // Check if the caught exception is an instance of ResourceNotFoundException
+        assertTrue(thrownException instanceof ResourceNotFoundException);
     }
 
     @Test
@@ -314,7 +318,7 @@ public class DroneControllerTest {
         List<Drone> responseBody = response.getBody();
         int bodySize = (responseBody != null) ? responseBody.size() : 0;
         assertEquals(1, bodySize);
-
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         // Verify that the service method was called
         verify(droneService, times(1)).findAll();
     }
@@ -359,7 +363,7 @@ public class DroneControllerTest {
 
         // Assert
         assertEquals(expectedBatteryLevel, responseEntity.getBody()); // Check if the returned battery level matches the
-                                                                      // expected level
+        // expected level
     }
 
     @Test
