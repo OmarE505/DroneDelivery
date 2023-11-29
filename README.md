@@ -34,7 +34,7 @@ Each **Medication** has: 
   * Test: `.\mvnw test`
 
 ## Testing:
-**you can find the JUnit testing classes under `/src/test/java/com/omarE505/DroneDelivery/`**
+**you can find the JUnit testing classes under `\src\test\java\com\omarE505\DroneDelivery\`**
 
 **to run the testing command as perviously mentioned `.\mvnw test`**
 
