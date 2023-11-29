@@ -32,6 +32,12 @@ Each **Medication** has: 
   * Build: `.\mvnw package`
   * Run: `.\mvnw spring-boot:run`
   * Test: `.\mvnw test`
+
+## Testing:
+**you can find the JUnit testing classes under `/src/test/java/com/omarE505/DroneDelivery/`**
+
+**to run the testing command as perviously mentioned `.\mvnw test`**
+
 ## Documentation:
 Content-type: application.json
 ### Drone Controller: `localhost:8080/api/drones`
