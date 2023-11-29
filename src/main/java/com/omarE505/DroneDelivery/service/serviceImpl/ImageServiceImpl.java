@@ -40,7 +40,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     // compress image bytes for optimized space in the database
-    private byte[] compressBytes(byte[] data) throws IOException {
+    public byte[] compressBytes(byte[] data) throws IOException {
         Deflater deflater = new Deflater();
         deflater.setInput(data);
         deflater.finish();

@@ -74,8 +74,6 @@ public class MedicationControllerTest {
     public void testRegister_InvalidData() {
         // Mock data - Here, intentionally create an invalid MedicationDto
         MedicationDto invalidMedicationDto = new MedicationDto();
-        // You might deliberately set invalid data, for example:
-        // invalidMedicationDto.setSomeField(null);
 
         // Mock the service behavior to throw IllegalArgumentException for invalid data
         Mockito.when(medicationService.save(any(MedicationDto.class)))

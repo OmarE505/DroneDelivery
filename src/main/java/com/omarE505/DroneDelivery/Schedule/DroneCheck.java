@@ -21,45 +21,57 @@ public class DroneCheck {
     @Autowired
     private AuditDroneRepository aDroneRepository;
 
-    @Scheduled(fixedDelay = 120000)
+    @Scheduled(fixedDelay = 1000)
     public void batteryCheck() {
         List<Drone> drones = droneRepository.findAll();
-        drones.stream().forEach(drone -> {
-            try {
-                int batteryCapacity = drone.getBatteryCapacity();
-                State state = drone.getState();
+        drones.forEach(this::manageDroneBattery);
+    }
 
-                // Simulate battery drain when the drone is loaded
-                if (state == State.LOADED && batteryCapacity <= 25) {
-                    drone.setState(State.IDLE); // Change the state to IDLE
-                    droneRepository.save(drone); // Save the updated state
+    private void manageDroneBattery(Drone drone) {
+        try {
+            int batteryCapacity = drone.getBatteryCapacity();
+            State state = drone.getState();
 
-                    System.out.println("Drone ID: " + drone.getId() + " stopped due to low battery (25% or below).");
-                } else if (state == State.LOADED) {
-                    // Simulate battery drain when the drone is loaded
-                    int drainedBattery = Math.max(batteryCapacity - 5, 0); // Drain by 5% but not below 0
-                    drone.setBatteryCapacity(drainedBattery);
-                    droneRepository.save(drone); // Save the updated battery percentage
-                } else if (state == State.IDLE && batteryCapacity < 100) {
-                    int chargedBattery = Math.min(batteryCapacity + 5, 100);
-                    drone.setBatteryCapacity(chargedBattery);
-                    droneRepository.save(drone);
-                    System.out.println("Drone ID: " + drone.getId() + " gained 5% battery while idle.");
-                }
-
-                // Log the battery percentage after the drain
-                int batteryPercentageAfter = drone.getBatteryCapacity();
-                System.out.println(
-                        "Drone ID: " + drone.getId() + ", Battery Percentage: " + batteryPercentageAfter);
-
-                // Save audit information
-                AuditDrone aDrone = new AuditDrone(state, batteryPercentageAfter);
-                aDrone.setDroneId(drone.getId());
-                aDroneRepository.save(aDrone);
-            } catch (IllegalArgumentException exc) {
-                throw new IllegalArgumentException("Drone not found");
+            if (state == State.LOADED && batteryCapacity <= 25) {
+                handleLowBatteryLoadedState(drone);
+            } else if (state == State.LOADED) {
+                drainBatteryWhenLoaded(drone);
+            } else if (state == State.IDLE && batteryCapacity < 100) {
+                chargeBatteryWhileIdle(drone);
             }
-        });
+
+            saveAuditInformation(drone);
+        } catch (IllegalArgumentException exc) {
+            throw new IllegalArgumentException("Drone not found");
+        }
+    }
+
+    private void handleLowBatteryLoadedState(Drone drone) {
+        drone.setState(State.IDLE);
+        droneRepository.save(drone);
+        System.out.println("Drone ID: " + drone.getId() + " stopped due to low battery (25% or below).");
+    }
+
+    private void drainBatteryWhenLoaded(Drone drone) {
+        int drainedBattery = Math.max(drone.getBatteryCapacity() - 5, 0);
+        drone.setBatteryCapacity(drainedBattery);
+        droneRepository.save(drone);
+    }
+
+    private void chargeBatteryWhileIdle(Drone drone) {
+        int chargedBattery = Math.min(drone.getBatteryCapacity() + 5, 100);
+        drone.setBatteryCapacity(chargedBattery);
+        droneRepository.save(drone);
+        System.out.println("Drone ID: " + drone.getId() + " gained 5% battery while idle.");
+    }
+
+    private void saveAuditInformation(Drone drone) {
+        int batteryPercentageAfter = drone.getBatteryCapacity();
+        System.out.println("Drone ID: " + drone.getId() + ", Battery Percentage: " + batteryPercentageAfter);
+
+        AuditDrone aDrone = new AuditDrone(drone.getState(), batteryPercentageAfter);
+        aDrone.setDroneId(drone.getId());
+        aDroneRepository.save(aDrone);
     }
 
 }
