@@ -2,8 +2,9 @@ package com.omarE505.DroneDelivery.schedule;
 
 import com.omarE505.DroneDelivery.entity.AuditDrone;
 import com.omarE505.DroneDelivery.entity.Drone;
-import com.omarE505.DroneDelivery.repository.AuditDroneRepository;
-import com.omarE505.DroneDelivery.repository.DroneRepository;
+import com.omarE505.DroneDelivery.Repository.AuditDroneRepository;
+import com.omarE505.DroneDelivery.Repository.DroneRepository;
+import com.omarE505.DroneDelivery.Schedule.DroneCheck;
 import com.omarE505.DroneDelivery.utils.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

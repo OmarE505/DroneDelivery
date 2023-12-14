@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.mifmif.common.regex.Generex;
 import com.omarE505.DroneDelivery.dto.MedicationDto;
 import com.omarE505.DroneDelivery.entity.Medication;
-import com.omarE505.DroneDelivery.repository.MedicationRepository;
+import com.omarE505.DroneDelivery.Repository.MedicationRepository;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
 

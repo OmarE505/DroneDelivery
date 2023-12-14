@@ -14,7 +14,11 @@ import com.omarE505.DroneDelivery.service.ImageService;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,47 +46,119 @@ public class MedicationController {
         this.imageService = imageService;
     }
 
-    @GetMapping
+    @ApiResponses(value = {
+        @ApiResponse(description = "Medications retrieved successfully", responseCode = "200"),
+        @ApiResponse(description = "No medications found", responseCode = "404"),
+        @ApiResponse(description = "Internal server error", responseCode = "500")
+    })
+    @GetMapping({"", "/"})
     public ResponseEntity<List<Medication>> getAllMeds() {
-        return ResponseEntity.ok(mService.findAll());
+        List<Medication> medications = mService.findAll();
+        if (medications.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(medications, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Medication> register(@NotNull @Valid @RequestBody MedicationDto dto)
-            throws IllegalArgumentException {
-        Medication med = mService.save(dto);
-        return ResponseEntity.ok(med);
+    @ApiResponses(value = {
+            @ApiResponse(description = "Medication registered successfully", responseCode = "201"),
+            @ApiResponse(description = "Invalid input", responseCode = "400")
+    })
+    @PostMapping({"","/"})
+    public ResponseEntity<Medication> register(@NotNull @Valid @RequestBody MedicationDto dto) {
+        try {
+            Medication med = mService.save(dto);
+            return new ResponseEntity<>(med, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(description = "Image uploaded and medication updated successfully", responseCode = "201"),
+            @ApiResponse(description = "Medication not found", responseCode = "404"),
+            @ApiResponse(description = "Invalid input or image processing error", responseCode = "400"),
+            @ApiResponse(description = "Internal server error", responseCode = "500")
+    })
     @PostMapping(value = "upload/{id}", consumes = { "multipart/form-data" })
     public ResponseEntity<Medication> imageUpload(@PathVariable Long id,
-            @RequestParam("image") Optional<MultipartFile> imageFile)
-            throws ResourceNotFoundException, IOException {
-        byte[] imageData = imageService.processImage(imageFile.get());
-        return ResponseEntity.ok(mService.imageUpdate(id, imageData));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Medication> findById(@PathVariable Long id)
-            throws ResourceNotFoundException, IOException, DataFormatException {
-        Medication med = mService.findById(id);
-        if (med.getImage() != null) {
-            byte[] imageData = imageService.decompress(med.getImage());
-            med.setImage(imageData);
+            @RequestParam("image") Optional<MultipartFile> imageFile) {
+        try {
+            byte[] imageData = imageService.processImage(imageFile.get());
+            Medication updatedMedication = mService.imageUpdate(id, imageData);
+            return new ResponseEntity<>(updatedMedication, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.ok(med);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(description = "Medication found successfully", responseCode = "200"),
+            @ApiResponse(description = "Medication not found", responseCode = "404"),
+            @ApiResponse(description = "Error in data format or processing", responseCode = "400"),
+            @ApiResponse(description = "Internal server error", responseCode = "500")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<Medication> findById(@PathVariable Long id) {
+        try {
+            Medication med = mService.findById(id);
+            if (med.getImage() != null) {
+                byte[] imageData = imageService.decompress(med.getImage());
+                med.setImage(imageData);
+            }
+            return new ResponseEntity<>(med, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DataFormatException | IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(description = "Medication updated successfully", responseCode = "200"),
+            @ApiResponse(description = "Medication not found", responseCode = "404"),
+            @ApiResponse(description = "Invalid input", responseCode = "400"),
+            @ApiResponse(description = "Internal server error", responseCode = "500")
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<Medication> update(@PathVariable Optional<Long> id, @NotNull @Valid @RequestBody MedicationDto dto)
-            throws ResourceNotFoundException, IllegalArgumentException {
-        return ResponseEntity.ok(mService.update(id, dto));
+    public ResponseEntity<Medication> update(@PathVariable Optional<Long> id,
+            @NotNull @Valid @RequestBody MedicationDto dto) {
+        try {
+            Medication updatedMedication = mService.update(id, dto);
+            return new ResponseEntity<>(updatedMedication, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(description = "Medication deleted successfully", responseCode = "204"),
+            @ApiResponse(description = "Medication not found", responseCode = "404"),
+            @ApiResponse(description = "Invalid input", responseCode = "400"),
+            @ApiResponse(description = "Internal server error", responseCode = "500")
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable long id) throws ResourceNotFoundException, IllegalArgumentException {
-        this.mService.delete(id);
-        return ResponseEntity.ok("");
+    public ResponseEntity<?> delete(@PathVariable long id) {
+        try {
+            this.mService.delete(id);
+            return new ResponseEntity<>("Deleted...", HttpStatus.NO_CONTENT);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

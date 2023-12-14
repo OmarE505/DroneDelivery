@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.omarE505.DroneDelivery.dto.DroneDto;
 import com.omarE505.DroneDelivery.dto.MedicationDto;
 import com.omarE505.DroneDelivery.entity.Model;
-import com.omarE505.DroneDelivery.repository.ModelRepository;
+import com.omarE505.DroneDelivery.Repository.ModelRepository;
 import com.omarE505.DroneDelivery.service.DroneService;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.ModelEnum;

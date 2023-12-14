@@ -4,7 +4,7 @@ import com.omarE505.DroneDelivery.dto.DroneDto;
 import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
 import com.omarE505.DroneDelivery.entity.Model;
-import com.omarE505.DroneDelivery.repository.ModelRepository;
+import com.omarE505.DroneDelivery.Repository.ModelRepository;
 import com.omarE505.DroneDelivery.service.DroneService;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.ModelEnum;

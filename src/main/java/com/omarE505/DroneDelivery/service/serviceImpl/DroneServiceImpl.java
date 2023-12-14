@@ -10,10 +10,10 @@ import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
 import com.omarE505.DroneDelivery.entity.Model;
 import com.omarE505.DroneDelivery.entity.SerialNumber;
-import com.omarE505.DroneDelivery.repository.DroneRepository;
-import com.omarE505.DroneDelivery.repository.MedicationRepository;
-import com.omarE505.DroneDelivery.repository.ModelRepository;
-import com.omarE505.DroneDelivery.repository.SerialNumberRepository;
+import com.omarE505.DroneDelivery.Repository.DroneRepository;
+import com.omarE505.DroneDelivery.Repository.MedicationRepository;
+import com.omarE505.DroneDelivery.Repository.ModelRepository;
+import com.omarE505.DroneDelivery.Repository.SerialNumberRepository;
 import com.omarE505.DroneDelivery.service.DroneService;
 import com.omarE505.DroneDelivery.utils.RequirementNotMetException;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
@@ -64,7 +64,7 @@ public class DroneServiceImpl implements DroneService {
                 }
                 SerialNumber number = new SerialNumber(serialNumber);
 
-                // Fetch existing model from repository based on ModelEnum
+                // Fetch existing model from Repository based on ModelEnum
                 Model model = modelRepository.findById(drone.getModel().getId())
                         .orElseThrow(() -> new IllegalArgumentException("Model not found"));
 
