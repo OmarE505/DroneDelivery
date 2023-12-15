@@ -1,16 +1,15 @@
 package com.omarE505.DroneDelivery.controller;
 
+import com.omarE505.DroneDelivery.Repository.ModelRepository;
 import com.omarE505.DroneDelivery.dto.DroneDto;
 import com.omarE505.DroneDelivery.entity.Drone;
 import com.omarE505.DroneDelivery.entity.Medication;
 import com.omarE505.DroneDelivery.entity.Model;
-import com.omarE505.DroneDelivery.Repository.ModelRepository;
 import com.omarE505.DroneDelivery.service.DroneService;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.RequirementNotMetException;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
 import com.omarE505.DroneDelivery.utils.State;
-
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -38,7 +37,7 @@ public class DroneController {
     private ModelRepository modelRepository;
 
     public DroneController(DroneService droneService, MedicationService medicationService,
-            ModelRepository modelRepository) {
+                           ModelRepository modelRepository) {
         this.droneService = droneService;
         this.medicationService = medicationService;
         this.modelRepository = modelRepository;
@@ -76,13 +75,10 @@ public class DroneController {
             Drone registeredDrone = droneService.register(dto);
             return new ResponseEntity<>(registeredDrone, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            // Handle the case where the model is not found
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (RequirementNotMetException e) {
-            // Handle the case where a requirement is not met
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            // Catch any other unexpected exceptions and handle them
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -112,10 +108,10 @@ public class DroneController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Drone> update(@PathVariable Optional<Long> id,
-            @NotNull @Valid @RequestBody DroneDto dto) {
+                                        @NotNull @Valid @RequestBody DroneDto dto) {
         try {
             if (id.isPresent()) {
-                Drone updatedDrone = droneService.update(id, dto); // Adjust the method invocation
+                Drone updatedDrone = droneService.update(id, dto);
                 return new ResponseEntity<>(updatedDrone, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -158,7 +154,7 @@ public class DroneController {
     })
     @GetMapping("/load")
     public ResponseEntity<Drone> load(@RequestParam("medicationIds") List<Long> medicationIds,
-            @RequestParam("droneId") Long droneId) {
+                                      @RequestParam("droneId") Long droneId) {
         try {
             List<Medication> meds = new ArrayList<>();
             for (Long medicationId : medicationIds) {
