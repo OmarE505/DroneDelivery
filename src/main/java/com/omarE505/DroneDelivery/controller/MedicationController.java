@@ -1,45 +1,31 @@
 package com.omarE505.DroneDelivery.controller;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.zip.DataFormatException;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-
 import com.omarE505.DroneDelivery.dto.MedicationDto;
 import com.omarE505.DroneDelivery.entity.Medication;
 import com.omarE505.DroneDelivery.service.ImageService;
 import com.omarE505.DroneDelivery.service.MedicationService;
 import com.omarE505.DroneDelivery.utils.ResourceNotFoundException;
-
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.zip.DataFormatException;
 
 @RestController
 @RequestMapping("api/medications")
 public class MedicationController {
 
-    @Autowired
-    private MedicationService mService;
+    private final MedicationService mService;
 
-    @Autowired
-    private ImageService imageService;
+    private final ImageService imageService;
 
     public MedicationController(MedicationService mService, ImageService imageService) {
         this.mService = mService;
@@ -47,9 +33,9 @@ public class MedicationController {
     }
 
     @ApiResponses(value = {
-        @ApiResponse(description = "Medications retrieved successfully", responseCode = "200"),
-        @ApiResponse(description = "No medications found", responseCode = "404"),
-        @ApiResponse(description = "Internal server error", responseCode = "500")
+            @ApiResponse(description = "Medications retrieved successfully", responseCode = "200"),
+            @ApiResponse(description = "No medications found", responseCode = "404"),
+            @ApiResponse(description = "Internal server error", responseCode = "500")
     })
     @GetMapping({"", "/"})
     public ResponseEntity<List<Medication>> getAllMeds() {
@@ -64,7 +50,7 @@ public class MedicationController {
             @ApiResponse(description = "Medication registered successfully", responseCode = "201"),
             @ApiResponse(description = "Invalid input", responseCode = "400")
     })
-    @PostMapping({"","/"})
+    @PostMapping({"", "/"})
     public ResponseEntity<Medication> register(@NotNull @Valid @RequestBody MedicationDto dto) {
         try {
             Medication med = mService.save(dto);
@@ -80,9 +66,9 @@ public class MedicationController {
             @ApiResponse(description = "Invalid input or image processing error", responseCode = "400"),
             @ApiResponse(description = "Internal server error", responseCode = "500")
     })
-    @PostMapping(value = "upload/{id}", consumes = { "multipart/form-data" })
+    @PostMapping(value = "upload/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<Medication> imageUpload(@PathVariable Long id,
-            @RequestParam("image") Optional<MultipartFile> imageFile) {
+                                                  @RequestParam("image") Optional<MultipartFile> imageFile) {
         try {
             byte[] imageData = imageService.processImage(imageFile.get());
             Medication updatedMedication = mService.imageUpdate(id, imageData);
@@ -128,7 +114,7 @@ public class MedicationController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<Medication> update(@PathVariable Optional<Long> id,
-            @NotNull @Valid @RequestBody MedicationDto dto) {
+                                             @NotNull @Valid @RequestBody MedicationDto dto) {
         try {
             Medication updatedMedication = mService.update(id, dto);
             return new ResponseEntity<>(updatedMedication, HttpStatus.OK);

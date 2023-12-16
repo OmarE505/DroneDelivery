@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +27,11 @@ import java.util.stream.Collectors;
 @RequestMapping("api/drones")
 public class DroneController {
 
-    @Autowired
-    private DroneService droneService;
+    private final DroneService droneService;
 
-    @Autowired
-    private MedicationService medicationService;
+    private final MedicationService medicationService;
 
-    private ModelRepository modelRepository;
+    private final ModelRepository modelRepository;
 
     public DroneController(DroneService droneService, MedicationService medicationService,
                            ModelRepository modelRepository) {
